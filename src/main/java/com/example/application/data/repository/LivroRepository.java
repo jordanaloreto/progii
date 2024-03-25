@@ -12,22 +12,24 @@ import com.example.application.data.Livro;
 public class LivroRepository {
 
     public boolean salvar(Livro livro) {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-
-            String insert = "INSERT INTO livro (nomeLivro, nomeAutor, anoPublicacao) VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setString(1, livro.getNomeLivro());
-            preparedStatement.setString(2, livro.getAutor().getNomeAutor()); // Assuming you have a method getNome() in Autor class
-            preparedStatement.setString(3, livro.getAnoPublicacao());
-            int resultado = preparedStatement.executeUpdate();
-            return resultado > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+		try {
+			Connection connection = DBConnection.getInstance().getConnection();
+	
+			String insert = "INSERT INTO livro (nomeLivro, nomeAutor, anoPublicacao, editora_id) VALUES (?, ?, ?, ?)";
+			PreparedStatement preparedStatement = connection.prepareStatement(insert);
+			preparedStatement.setString(1, livro.getNomeLivro());
+			preparedStatement.setString(2, livro.getAutor().getNomeAutor()); // Assuming you have a method getNome() in Autor class
+			preparedStatement.setString(3, livro.getAnoPublicacao());
+			preparedStatement.setInt(4, livro.getEditora().getId()); // Assuming you have a method getId() in Editora class
+			int resultado = preparedStatement.executeUpdate();
+			return resultado > 0;
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 
     public boolean alterar(Livro livro) {
         try {

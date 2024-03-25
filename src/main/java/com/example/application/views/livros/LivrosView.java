@@ -1,5 +1,9 @@
 package com.example.application.views.livros;
 
+import com.example.application.data.Autor;
+import com.example.application.data.Editora;
+import com.example.application.data.Livro;
+import com.example.application.data.repository.LivroRepository;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -30,6 +34,29 @@ public class LivrosView extends Composite<VerticalLayout> {
         ComboBox comboBox = new ComboBox();
         ComboBox comboBox2 = new ComboBox();
         Button buttonPrimary = new Button();
+
+        buttonPrimary.addClickListener(clickEvent ->{
+    Livro livro = new Livro();
+    livro.setNomeLivro(textField.getValue());
+    livro.setAnoPublicacao(datePicker.getValue());
+    
+    // Supondo que comboBox2 contém objetos Autor e comboBox contém objetos Editora
+    Autor autorSelecionado = comboBox2.getValue();
+    Editora editoraSelecionada = comboBox.getValue();
+    
+    livro.setAutor(autorSelecionado);
+    livro.setEditora(editoraSelecionada);
+
+    LivroRepository livroRepository = new LivroRepository();
+    livroRepository.salvar(livro);
+    
+    textField.clear();  
+    datePicker.clear();
+    comboBox.clear();
+    comboBox2.clear();
+});
+
+        
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
         formLayout2Col.setWidth("100%");
