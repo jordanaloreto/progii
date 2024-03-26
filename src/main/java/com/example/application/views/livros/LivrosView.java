@@ -1,5 +1,7 @@
 package com.example.application.views.livros;
 
+import com.example.application.data.Autor;
+import com.example.application.data.Editora;
 import com.example.application.data.Livro;
 import com.example.application.data.repository.LivroRepository;
 import com.example.application.views.MainLayout;
@@ -7,7 +9,6 @@ import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.Icon;
@@ -28,34 +29,41 @@ public class LivrosView extends Composite<VerticalLayout> {
     public LivrosView() {
         FormLayout formLayout2Col = new FormLayout();
         TextField textField = new TextField();
-        DatePicker datePicker = new DatePicker();
+        TextField textField2 = new TextField();
         ComboBox comboBox = new ComboBox();
         ComboBox comboBox2 = new ComboBox();
         Button buttonPrimary = new Button();
 
         buttonPrimary.addClickListener(clickEvent ->{
-            Livro livro = new Livro();
-            livro.setNomeLivro(textField.getValue());
-            livro.setAnoPublicacao(datePicker.getValue());
-            livro.setEditora(comboBox.getValue());
-            livro.setAutor(comboBox2.getValue());
+    Livro livro = new Livro();
+    livro.setNomeLivro(textField.getValue());
+    livro.setAnoPublicacao(textField2.getValue());
+    
+    // Obtenha o autor selecionado do ComboBox
+    Autor autor = (Autor) comboBox2.getValue();
+    livro.setAutor(autor);
+    
+    // Obtenha a editora selecionada do ComboBox
+    Editora editora = (Editora) comboBox.getValue();
+    livro.setEditora(editora);
 
-            LivroRepository livroRepository = new LivroRepository();
-            livroRepository.salvar(livro);
-            
-            textField.clear();  
-            datePicker.clear();
-            comboBox.clear();
-            comboBox2.clear();
-        });
+    LivroRepository livroRepository = new LivroRepository();
+    livroRepository.salvar(livro);
+    
+    textField.clear();  
+    textField2.clear();
+    comboBox.clear();
+    comboBox2.clear();
+});
+
         
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
         formLayout2Col.setWidth("100%");
         textField.setLabel("Nome do Livro");
         textField.setWidth("min-content");
-        datePicker.setLabel("Ano Publicação");
-        datePicker.setWidth("min-content");
+        textField2.setLabel("Ano Publicação");
+        textField2.setWidth("min-content");
         comboBox.setLabel("Editora");
         comboBox.setWidth("min-content");
         setComboBoxSampleData(comboBox);
@@ -67,7 +75,7 @@ public class LivrosView extends Composite<VerticalLayout> {
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         getContent().add(formLayout2Col);
         formLayout2Col.add(textField);
-        formLayout2Col.add(datePicker);
+        formLayout2Col.add(textField2);
         formLayout2Col.add(comboBox);
         formLayout2Col.add(comboBox2);
         getContent().add(buttonPrimary);

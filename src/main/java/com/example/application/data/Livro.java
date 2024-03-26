@@ -1,15 +1,14 @@
 package com.example.application.data;
 
-import java.sql.Date;
 
 public class Livro {
     private int id;
     private String nomeLivro;
     private Autor autor;
     private Editora editora;
-    private Date anoPublicacao;
+    private String anoPublicacao;
     
-    public Livro(int id, String nomeLivro, String nomeAutor, Date anoPublicacao, Autor autor, Editora editora) {
+    public Livro(int id, String nomeLivro, String anoPublicacao, Autor autor, Editora editora) {
         super();
         this.id = id;
         this.nomeLivro = nomeLivro;
@@ -54,11 +53,11 @@ public class Livro {
         this.editora = editora;
     }
 
-    public Date getAnoPublicacao() {
+    public String getAnoPublicacao() {
         return anoPublicacao;
     }
 
-    public void setAnoPublicacao(Date anoPublicacao) {
+    public void setAnoPublicacao(String anoPublicacao) {
         this.anoPublicacao = anoPublicacao;
     }
     

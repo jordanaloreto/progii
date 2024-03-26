@@ -26,6 +26,11 @@ public class Autor {
         this.nomeAutor = nomeAutor;
     }
 
+    @Override
+    public String toString() {
+        return nomeAutor;
+    }
+
     
 
 }

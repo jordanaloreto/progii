@@ -15,11 +15,11 @@ public class LivroRepository {
 		try {
 			Connection connection = DBConnection.getInstance().getConnection();
 	
-			String insert = "INSERT INTO livro (nomeLivro, nomeAutor, anoPublicacao, editora_id) VALUES (?, ?, ?, ?)";
+			String insert = "INSERT INTO livro (nome_Livro, id_autor, id_editora, ano_Publicacao) VALUES (?, ?, ?, ?)";
 			PreparedStatement preparedStatement = connection.prepareStatement(insert);
 			preparedStatement.setString(1, livro.getNomeLivro());
-			preparedStatement.setString(2, livro.getAutor().getNomeAutor()); // Assuming you have a method getNome() in Autor class
-			preparedStatement.setDate(3, livro.getAnoPublicacao());
+			preparedStatement.setInt(2, livro.getAutor().getId()); // Assuming you have a method getNome() in Autor class
+			preparedStatement.setString(3, livro.getAnoPublicacao());
 			preparedStatement.setInt(4, livro.getEditora().getId()); // Assuming you have a method getId() in Editora class
 			int resultado = preparedStatement.executeUpdate();
 			return resultado > 0;
@@ -39,7 +39,7 @@ public class LivroRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setString(1, livro.getNomeLivro());
             preparedStatement.setString(2, livro.getAutor().getNomeAutor());
-            preparedStatement.setDate(3, livro.getAnoPublicacao());
+            preparedStatement.setString(3, livro.getAnoPublicacao());
             preparedStatement.setInt(4, livro.getId());
             int resultado = preparedStatement.executeUpdate();
             return resultado > 0;
