@@ -5,6 +5,10 @@ public class Edicao {
     private String novoConteudo;
     private int ano;
     private Livro livro;
+    
+
+    public Edicao() {
+    }
 
     public Edicao(int id, String novoConteudo, int ano, Livro livro) {
         this.id = id;

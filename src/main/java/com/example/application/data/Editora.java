@@ -3,6 +3,10 @@ package com.example.application.data;
 public class Editora {
     private int id;
     private String nomeEditora;
+    
+
+    public Editora() {
+    }
 
     public Editora(int id, String nomeEditora){
         super();

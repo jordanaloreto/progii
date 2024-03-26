@@ -3,6 +3,8 @@ package com.example.application.views.livros;
 import com.example.application.data.Autor;
 import com.example.application.data.Editora;
 import com.example.application.data.Livro;
+import com.example.application.data.repository.AutorRepository;
+import com.example.application.data.repository.EditoraRepository;
 import com.example.application.data.repository.LivroRepository;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
@@ -34,16 +36,13 @@ public class LivrosView extends Composite<VerticalLayout> {
         ComboBox comboBox2 = new ComboBox();
         Button buttonPrimary = new Button();
 
-        buttonPrimary.addClickListener(clickEvent ->{
+    buttonPrimary.addClickListener(clickEvent ->{
     Livro livro = new Livro();
     livro.setNomeLivro(textField.getValue());
     livro.setAnoPublicacao(textField2.getValue());
     
-    // Obtenha o autor selecionado do ComboBox
     Autor autor = (Autor) comboBox2.getValue();
     livro.setAutor(autor);
-    
-    // Obtenha a editora selecionada do ComboBox
     Editora editora = (Editora) comboBox.getValue();
     livro.setEditora(editora);
 
@@ -66,10 +65,10 @@ public class LivrosView extends Composite<VerticalLayout> {
         textField2.setWidth("min-content");
         comboBox.setLabel("Editora");
         comboBox.setWidth("min-content");
-        setComboBoxSampleData(comboBox);
+        setComboBoxData(comboBox, comboBox2);
         comboBox2.setLabel("Autor");
         comboBox2.setWidth("min-content");
-        setComboBoxSampleData(comboBox2);
+        setComboBoxData(comboBox2, comboBox2);
         buttonPrimary.setText("Save");
         buttonPrimary.setWidth("min-content");
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -81,16 +80,17 @@ public class LivrosView extends Composite<VerticalLayout> {
         getContent().add(buttonPrimary);
     }
 
-    record SampleItem(String value, String label, Boolean disabled) {
-    }
+    private void setComboBoxData(ComboBox<Editora> comboBoxEditora, ComboBox<Autor> comboBoxAutor) {
+    // Popula o ComboBox de Editora
+    EditoraRepository editoraRepository = new EditoraRepository();
+    List<Editora> editoras = editoraRepository.listarTodas();
+    comboBoxEditora.setItems(editoras);
+    comboBoxEditora.setItemLabelGenerator(Editora::getNomeEditora); // Suponha que o nome da editora esteja em um método getNome()
 
-    private void setComboBoxSampleData(ComboBox comboBox) {
-        List<SampleItem> sampleItems = new ArrayList<>();
-        sampleItems.add(new SampleItem("first", "First", null));
-        sampleItems.add(new SampleItem("second", "Second", null));
-        sampleItems.add(new SampleItem("third", "Third", Boolean.TRUE));
-        sampleItems.add(new SampleItem("fourth", "Fourth", null));
-        comboBox.setItems(sampleItems);
-        comboBox.setItemLabelGenerator(item -> ((SampleItem) item).label());
-    }
+    // Popula o ComboBox de Autor
+    AutorRepository autorRepository = new AutorRepository();
+    List<Autor> autores = autorRepository.listarTodos();
+    comboBoxAutor.setItems(autores);
+    comboBoxAutor.setItemLabelGenerator(Autor::getNomeAutor); // Suponha que o nome do autor esteja em um método getNome()
+}
 }

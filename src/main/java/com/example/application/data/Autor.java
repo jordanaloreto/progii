@@ -3,6 +3,10 @@ package com.example.application.data;
 public class Autor {
     private int id;
     private String nomeAutor;
+    
+
+    public Autor() {
+    }
 
     public Autor(int id, String nomeAutor){
         super();

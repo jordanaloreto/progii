@@ -13,7 +13,7 @@ public class EdicaoRepository {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
 
-            String insert = "INSERT INTO edicao (novoConteudo, ano, livro_id) VALUES (?, ?, ?)";
+            String insert = "INSERT INTO edicao (novo_conteudo, ano, id_livro) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insert);
             preparedStatement.setString(1, edicao.getNovoConteudo());
             preparedStatement.setInt(2, edicao.getAno());
