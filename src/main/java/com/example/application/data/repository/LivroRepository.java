@@ -19,8 +19,9 @@ public class LivroRepository {
 			PreparedStatement preparedStatement = connection.prepareStatement(insert);
 			preparedStatement.setString(1, livro.getNomeLivro());
 			preparedStatement.setInt(2, livro.getAutor().getId()); // Assuming you have a method getNome() in Autor class
-			preparedStatement.setString(3, livro.getAnoPublicacao());
-			preparedStatement.setInt(4, livro.getEditora().getId()); // Assuming you have a method getId() in Editora class
+			preparedStatement.setInt(3, livro.getEditora().getId());
+            preparedStatement.setString(4, livro.getAnoPublicacao());
+            // Assuming you have a method getId() in Editora class
 			int resultado = preparedStatement.executeUpdate();
 			return resultado > 0;
 	

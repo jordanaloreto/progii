@@ -21,6 +21,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import java.util.ArrayList;
 import java.util.List;
+import com.vaadin.flow.component.notification.Notification;
 
 @PageTitle("Livros")
 @Route(value = "Livros", layout = MainLayout.class)
@@ -36,24 +37,37 @@ public class LivrosView extends Composite<VerticalLayout> {
         ComboBox comboBox2 = new ComboBox();
         Button buttonPrimary = new Button();
 
-    buttonPrimary.addClickListener(clickEvent ->{
-    Livro livro = new Livro();
-    livro.setNomeLivro(textField.getValue());
-    livro.setAnoPublicacao(textField2.getValue());
-    
-    Autor autor = (Autor) comboBox2.getValue();
-    livro.setAutor(autor);
-    Editora editora = (Editora) comboBox.getValue();
-    livro.setEditora(editora);
-
-    LivroRepository livroRepository = new LivroRepository();
-    livroRepository.salvar(livro);
-    
-    textField.clear();  
-    textField2.clear();
-    comboBox.clear();
-    comboBox2.clear();
-});
+        buttonPrimary.addClickListener(clickEvent -> {
+            String nomeLivro = textField.getValue();
+            String anoPublicacao = textField2.getValue();
+            Autor autorSelecionado = (Autor) comboBox2.getValue();
+            Editora editoraSelecionada = (Editora) comboBox.getValue();
+        
+            if (nomeLivro.isEmpty() || anoPublicacao.isEmpty() || autorSelecionado == null || editoraSelecionada == null) {
+                Notification.show("Por favor, preencha todos os campos antes de salvar.");
+                return;
+            }
+                
+            Livro livro = new Livro();
+            livro.setNomeLivro(nomeLivro);
+            livro.setAnoPublicacao(anoPublicacao);
+            livro.setAutor(autorSelecionado);
+            livro.setEditora(editoraSelecionada);
+        
+            LivroRepository livroRepository = new LivroRepository();
+            boolean salvou = livroRepository.salvar(livro);
+        
+            if (salvou) {
+                Notification.show("Livro salvo com sucesso!");
+                textField.clear();
+                textField2.clear();
+                comboBox.clear();
+                comboBox2.clear();
+            } else {
+                Notification.show("Erro ao salvar o livro. Por favor, tente novamente.");
+            }
+        });
+        
 
         
         getContent().setWidth("100%");
