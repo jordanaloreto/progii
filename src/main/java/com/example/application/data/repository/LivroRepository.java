@@ -3,9 +3,12 @@ package com.example.application.data.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.application.data.Autor;
 import com.example.application.data.DBConnection;
 import com.example.application.data.Livro;
 
@@ -67,6 +70,24 @@ public class LivroRepository {
         }
     }
 
+    public List<Livro> listarTodos() {
+    List<Livro> livros = new ArrayList<>();
+    try (Connection connection = DBConnection.getInstance().getConnection()) {
+        String query = "SELECT * FROM livro";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        while (resultSet.next()) {
+            int id = resultSet.getInt("id"); // Supondo que o id seja um inteiro
+            String nome = resultSet.getString("nome_livro"); // Substitua "nome_livro" pelo nome da coluna na tabela livro
+            Livro livro = new Livro(id, nome); // Supondo que você tenha um construtor em Autor que aceite id e nome
+            livros.add(livro);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return livros;
+}
+
     // public List<Livro> buscarTodos() {
     //     try {
     //         Connection connection = DBConnection.getInstance().getConnection();
@@ -81,7 +102,7 @@ public class LivroRepository {
     //             livro.setNomeLivro(resultSet.getString("nomeLivro"));
     //             livro.setAnoPublicacao(resultSet.getString("anoPublicacao"));
     //             // You may need to fetch Autor and Editora details separately based on your database structure
-    //             // livro.setAutor(fetchAutorDetails(resultSet.getInt("autor_id")));
+    //             // livro.setAutor(fetchAutorDetails(resultSet.getInt("livro_id")));
     //             // livro.setEditora(fetchEditoraDetails(resultSet.getInt("editora_id")));
     //             lista.add(livro);
     //         }
