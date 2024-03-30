@@ -75,7 +75,7 @@ public class EdicaoView extends Composite<VerticalLayout> {
         comboBox.setLabel("Livro");
         comboBox.setWidth("min-content");
         setComboBoxData(comboBox);
-        buttonPrimary.setText("Button");
+        buttonPrimary.setText("Salvar");
         buttonPrimary.setWidth("min-content");
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         getContent().add(formLayout2Col);
