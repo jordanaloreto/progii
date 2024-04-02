@@ -5,6 +5,10 @@ import java.sql.Date;
 public class Emprestimo {
     private int id;
     private Date dataEmprestimo;
+    
+
+    public Emprestimo() {
+    }
 
     public Emprestimo(int id, Date dataEmprestimo){
         super();

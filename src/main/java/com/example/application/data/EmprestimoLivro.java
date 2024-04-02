@@ -4,6 +4,9 @@ public class EmprestimoLivro {
     private Livro livro;
     private Emprestimo emprestimo;
     
+    public EmprestimoLivro() {
+    }
+
     public EmprestimoLivro(Livro livro, Emprestimo emprestimo) {
         this.livro = livro;
         this.emprestimo = emprestimo;

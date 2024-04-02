@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +13,25 @@ import com.example.application.data.Emprestimo;
 
 public class EmprestimoRepository {
 
-    public boolean salvar(Emprestimo emprestimo) {
+    public int salvar(Emprestimo emprestimo) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
-
-            String insert = "INSERT INTO emprestimo (dataEmprestimo) VALUES (?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
+    
+            String insert = "INSERT INTO emprestimo (data_emprestimo) VALUES (?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setDate(1, emprestimo.getDataEmprestimo());
-            int resultado = preparedStatement.executeUpdate();
-            return resultado > 0;
-
+            preparedStatement.executeUpdate();
+    
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1); // Retorna o ID gerado
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return -1; // Retorna -1 se não conseguir recuperar o ID
     }
+    
 
     public boolean alterar(Emprestimo emprestimo) {
         try {
@@ -61,44 +66,6 @@ public class EmprestimoRepository {
         }
     }
 
-    public List<Emprestimo> buscarTodos() {
-        List<Emprestimo> listaEmprestimos = new ArrayList<>();
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
 
-            String query = "SELECT * FROM emprestimo";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                java.sql.Date dataEmprestimo = resultSet.getDate("dataEmprestimo");
-                Emprestimo emprestimo = new Emprestimo(id, dataEmprestimo);
-                listaEmprestimos.add(emprestimo);
-            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listaEmprestimos;
-    }
-
-    public Emprestimo buscarPorId(int id) {
-        Emprestimo emprestimo = null;
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-
-            String query = "SELECT * FROM emprestimo WHERE id=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                java.sql.Date dataEmprestimo = resultSet.getDate("dataEmprestimo");
-                emprestimo = new Emprestimo(id, dataEmprestimo);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return emprestimo;
-    }
 }

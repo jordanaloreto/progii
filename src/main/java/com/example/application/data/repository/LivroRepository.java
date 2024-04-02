@@ -83,10 +83,10 @@ public class LivroRepository {
                 String anoPublicacao = resultSet.getString("ano_publicacao");
                 
                 // Aqui você precisa obter os dados do autor e da editora, assumindo que existam
-                int autorId = resultSet.getInt("autor_id");
+                int autorId = resultSet.getInt("id");
                 Autor autor = buscarAutorPorId(autorId); // Implemente o método para buscar autor por id
                 
-                int editoraId = resultSet.getInt("editora_id");
+                int editoraId = resultSet.getInt("id");
                 Editora editora = buscarEditoraPorId(editoraId); // Implemente o método para buscar editora por id
                 
                 Livro livro = new Livro(id, nomeLivro, anoPublicacao, autor, editora);
