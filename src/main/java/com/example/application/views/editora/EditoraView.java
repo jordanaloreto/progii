@@ -63,41 +63,43 @@ public class EditoraView extends Composite<VerticalLayout> {
         getContent().add(grid);
 
         // Adiciona a coluna de botões à grid
-        grid.addComponentColumn(editora -> {
-            Button editButton = new Button("Editar");
-            editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            Editora editoraSelecionada = editora;
-            editButton.addClickListener(event -> {
-                // Exibe um diálogo de edição
-                Dialog dialog = new Dialog();
-                EditoraEditorForm editoraEditorForm = new EditoraEditorForm(editoraSelecionada);
-                dialog.add(editoraEditorForm);
+grid.addComponentColumn(editora -> {
+    Button editButton = new Button("Editar");
+    editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Editora editoraSelecionada = editora;
+    editButton.addClickListener(event -> {
+        // Exibe um diálogo de edição
+        Dialog dialog = new Dialog();
+        EditoraEditorForm editoraEditorForm = new EditoraEditorForm(editoraSelecionada);
+        dialog.add(editoraEditorForm);
 
-                // Adiciona um botão "Salvar" ao diálogo
-                Button saveButton = new Button("Salvar", e -> {
-                    // Obtém os detalhes editados da editora do formulário
-                    String novoNomeEditora = editoraEditorForm.getNomeEditora();
-                    editoraSelecionada.setNomeEditora(novoNomeEditora);
+        // Adiciona um botão "Salvar" ao diálogo
+        Button saveButton = new Button("Salvar", e -> {
+            // Obtém os detalhes editados da editora do formulário
+            String novoNomeEditora = editoraEditorForm.getNomeEditora();
+            editoraSelecionada.setNomeEditora(novoNomeEditora);
 
-                    // Chama o método alterar do seu repository para salvar as alterações
-                    boolean sucesso = editoraRepository.alterar(editoraSelecionada);
+            // Chama o método alterar do seu repository para salvar as alterações
+            EditoraRepository editoraRepository = new EditoraRepository();
+            boolean sucesso = editoraRepository.alterar(editoraSelecionada);
 
-                    if (sucesso) {
-                        // Se a alteração for bem-sucedida, fecha o diálogo
-                        dialog.close();
-                        // Atualiza a grid ou qualquer outra ação necessária após a edição
-                        refreshGrid();
-                        Notification.show("Editora atualizada com sucesso!");
-                    } else {
-                        // Se houver um erro, exibe uma mensagem de erro ao usuário
-                        Notification.show("Erro ao atualizar a editora. Por favor, tente novamente.");
-                    }
-                });
-                dialog.add(saveButton);
-                dialog.open();
-            });
-            return editButton;
+            if (sucesso) {
+                // Se a alteração for bem-sucedida, fecha o diálogo
+                dialog.close();
+                // Atualiza a grid ou qualquer outra ação necessária após a edição
+                refreshGrid();
+                Notification.show("Editora atualizada com sucesso!");
+            } else {
+                // Se houver um erro, exibe uma mensagem de erro ao usuário
+                Notification.show("Erro ao atualizar a editora. Por favor, tente novamente.");
+            }
         });
+        dialog.add(saveButton);
+        dialog.open();
+    });
+    return editButton;
+});
+
 
         grid.addComponentColumn(editora -> {
             Button deleteButton = new Button("Excluir");
@@ -105,13 +107,6 @@ public class EditoraView extends Composite<VerticalLayout> {
             deleteButton.addClickListener(event -> {
                 // Obtém a editora associada à linha selecionada
                 Editora editoraSelecionada = editora;
-                // Exibe um diálogo ou interface de edição
-                // Aqui você pode abrir um diálogo de edição ou navegar para uma nova view para
-                // editar a editora
-                // Por exemplo, você pode usar Vaadin Dialog para criar um diálogo de edição:
-                // Dialog dialog = new Dialog(new EditoraEditorForm(editoraSelecionada,
-                // editoraRepository));
-                // dialog.open();
             });
             return deleteButton;
         });
