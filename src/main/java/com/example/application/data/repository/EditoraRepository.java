@@ -33,7 +33,7 @@ public class EditoraRepository {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
 
-            String update = "UPDATE editora SET nomeEditora=? WHERE id=?";
+            String update = "UPDATE editora SET nome_editora=? WHERE id=?";
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setString(1, editora.getNomeEditora());
             preparedStatement.setInt(2, editora.getId());

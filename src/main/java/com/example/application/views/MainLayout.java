@@ -4,7 +4,7 @@ import com.example.application.views.autor.AutorView;
 import com.example.application.views.edicao.EdicaoView;
 import com.example.application.views.editora.EditoraView;
 import com.example.application.views.emprestimo.EmprestimoView;
-import com.example.application.views.listagem.ListagemView;
+// import com.example.application.views.listagem.ListagemView;
 import com.example.application.views.livros.LivrosView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -60,7 +60,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(new SideNavItem("Edicao", EdicaoView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
         nav.addItem(new SideNavItem("Autor", AutorView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
         nav.addItem(new SideNavItem("Emprestimo", EmprestimoView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
-        nav.addItem(new SideNavItem("Listagem", ListagemView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
+        // nav.addItem(new SideNavItem("Listagem", ListagemView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
 
         return nav;
     }
