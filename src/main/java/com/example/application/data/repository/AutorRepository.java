@@ -33,7 +33,7 @@ public class AutorRepository {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
 
-            String update = "UPDATE autor SET nomeAutor=? WHERE id=?";
+            String update = "UPDATE autor SET nome_autor=? WHERE id=?";
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setString(1, autor.getNomeAutor());
             preparedStatement.setInt(2, autor.getId());

@@ -40,12 +40,13 @@ public class LivroRepository {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
 
-            String update = "UPDATE livro SET nomeLivro=?, nomeAutor=?, anoPublicacao=? WHERE id=?";
+            String update = "UPDATE livro SET nome_livro=?, id_autor=?, id_editora=?, ano_Publicacao=?  WHERE id=?";
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setString(1, livro.getNomeLivro());
             preparedStatement.setString(2, livro.getAutor().getNomeAutor());
-            preparedStatement.setString(3, livro.getAnoPublicacao());
-            preparedStatement.setInt(4, livro.getId());
+            preparedStatement.setString(3, livro.getEditora().getNomeEditora());
+            preparedStatement.setString(4, livro.getAnoPublicacao());
+            preparedStatement.setInt(5, livro.getId());
             int resultado = preparedStatement.executeUpdate();
             return resultado > 0;
 
@@ -82,12 +83,11 @@ public class LivroRepository {
                 String nomeLivro = resultSet.getString("nome_livro");
                 String anoPublicacao = resultSet.getString("ano_publicacao");
                 
-                // Aqui você precisa obter os dados do autor e da editora, assumindo que existam
                 int autorId = resultSet.getInt("id");
-                Autor autor = buscarAutorPorId(autorId); // Implemente o método para buscar autor por id
+                Autor autor = buscarAutorPorId(autorId);
                 
                 int editoraId = resultSet.getInt("id");
-                Editora editora = buscarEditoraPorId(editoraId); // Implemente o método para buscar editora por id
+                Editora editora = buscarEditoraPorId(editoraId); 
                 
                 Livro livro = new Livro(id, nomeLivro, anoPublicacao, autor, editora);
                 livros.add(livro);
@@ -98,7 +98,6 @@ public class LivroRepository {
         return livros;
     }
     
-    // Implemente esses métodos para buscar autor e editora por id no banco de dados
     private Autor buscarAutorPorId(int id) {
         Autor autor = null;
         try (Connection connection = DBConnection.getInstance().getConnection()) {
@@ -117,7 +116,6 @@ public class LivroRepository {
         return autor;
     }
     
-    // Método para buscar editora por ID no banco de dados
     private Editora buscarEditoraPorId(int id) {
         Editora editora = null;
         try (Connection connection = DBConnection.getInstance().getConnection()) {

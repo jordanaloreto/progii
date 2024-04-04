@@ -13,35 +13,42 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import java.util.ArrayList;
-import java.util.List;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.dialog.Dialog;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @PageTitle("Livros")
 @Route(value = "Livros", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @Uses(Icon.class)
 public class LivrosView extends Composite<VerticalLayout> {
-
+    
+    private Grid<Livro> grid;
+    
     public LivrosView() {
         FormLayout formLayout2Col = new FormLayout();
         TextField textField = new TextField();
         TextField textField2 = new TextField();
-        ComboBox comboBox = new ComboBox();
-        ComboBox comboBox2 = new ComboBox();
+        ComboBox<Editora> comboBox = new ComboBox<>();
+        ComboBox<Autor> comboBox2 = new ComboBox<>();
         Button buttonPrimary = new Button();
 
         buttonPrimary.addClickListener(clickEvent -> {
             String nomeLivro = textField.getValue();
             String anoPublicacao = textField2.getValue();
-            Autor autorSelecionado = (Autor) comboBox2.getValue();
-            Editora editoraSelecionada = (Editora) comboBox.getValue();
+            Autor autorSelecionado = comboBox2.getValue();
+            Editora editoraSelecionada = comboBox.getValue();
         
             if (nomeLivro.isEmpty() || anoPublicacao.isEmpty() || autorSelecionado == null || editoraSelecionada == null) {
                 Notification.show("Por favor, preencha todos os campos antes de salvar.");
@@ -63,12 +70,11 @@ public class LivrosView extends Composite<VerticalLayout> {
                 textField2.clear();
                 comboBox.clear();
                 comboBox2.clear();
+                refreshGrid(); // Atualiza a grid após salvar
             } else {
                 Notification.show("Erro ao salvar o livro. Por favor, tente novamente.");
             }
         });
-        
-
         
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
@@ -77,13 +83,13 @@ public class LivrosView extends Composite<VerticalLayout> {
         textField.setWidth("min-content");
         textField2.setLabel("Ano Publicação");
         textField2.setWidth("min-content");
+        setComboBoxData(comboBox, comboBox2);
         comboBox.setLabel("Editora");
         comboBox.setWidth("min-content");
-        setComboBoxData(comboBox, comboBox2);
+        setComboBoxData(comboBox, comboBox2); // Correção aqui
         comboBox2.setLabel("Autor");
         comboBox2.setWidth("min-content");
-        setComboBoxData(comboBox2, comboBox2);
-        buttonPrimary.setText("Save");
+        buttonPrimary.setText("Salvar");
         buttonPrimary.setWidth("min-content");
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         getContent().add(formLayout2Col);
@@ -92,19 +98,44 @@ public class LivrosView extends Composite<VerticalLayout> {
         formLayout2Col.add(comboBox);
         formLayout2Col.add(comboBox2);
         getContent().add(buttonPrimary);
+
+        // Cria e configura a grid
+       grid = new Grid<>(Livro.class);
+    grid.setColumns("nomeLivro");
+    // Carrega os nomes dos livros na grid
+    grid.setDataProvider(new ListDataProvider<>(getLivros()));
+    grid.setSizeFull();
+    // Adiciona a grid ao layout
+    getContent().add(grid);
+
+    // Atualiza a grid com os dados dos livros ao inicializar a view
+    refreshGrid();
+    }
+
+    private List<Livro> getLivros() {
+        // Obtém os livros do banco de dados
+        LivroRepository livroRepository = new LivroRepository();
+        return livroRepository.listarTodas();
     }
 
     private void setComboBoxData(ComboBox<Editora> comboBoxEditora, ComboBox<Autor> comboBoxAutor) {
-    // Popula o ComboBox de Editora
-    EditoraRepository editoraRepository = new EditoraRepository();
-    List<Editora> editoras = editoraRepository.listarTodas();
-    comboBoxEditora.setItems(editoras);
-    comboBoxEditora.setItemLabelGenerator(Editora::getNomeEditora); // Suponha que o nome da editora esteja em um método getNome()
+        // Popula o ComboBox de Editora
+        EditoraRepository editoraRepository = new EditoraRepository();
+        List<Editora> editoras = editoraRepository.listarTodas();
+        comboBoxEditora.setItems(editoras);
+        comboBoxEditora.setItemLabelGenerator(Editora::getNomeEditora);
 
-    // Popula o ComboBox de Autor
-    AutorRepository autorRepository = new AutorRepository();
-    List<Autor> autores = autorRepository.listarTodos();
-    comboBoxAutor.setItems(autores);
-    comboBoxAutor.setItemLabelGenerator(Autor::getNomeAutor); // Suponha que o nome do autor esteja em um método getNome()
-}
+        // Popula o ComboBox de Autor
+        AutorRepository autorRepository = new AutorRepository();
+        List<Autor> autores = autorRepository.listarTodos();
+        comboBoxAutor.setItems(autores);
+        comboBoxAutor.setItemLabelGenerator(Autor::getNomeAutor);
+    }
+
+    private void refreshGrid() {
+        // Atualiza a grid com os dados dos livros
+        LivroRepository livroRepository = new LivroRepository();
+        List<Livro> livros = livroRepository.listarTodas();
+        grid.setItems(livros);
+    }
 }

@@ -6,6 +6,7 @@ import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -84,13 +86,10 @@ grid.addComponentColumn(editora -> {
             boolean sucesso = editoraRepository.alterar(editoraSelecionada);
 
             if (sucesso) {
-                // Se a alteração for bem-sucedida, fecha o diálogo
                 dialog.close();
-                // Atualiza a grid ou qualquer outra ação necessária após a edição
                 refreshGrid();
                 Notification.show("Editora atualizada com sucesso!");
             } else {
-                // Se houver um erro, exibe uma mensagem de erro ao usuário
                 Notification.show("Erro ao atualizar a editora. Por favor, tente novamente.");
             }
         });
@@ -102,14 +101,42 @@ grid.addComponentColumn(editora -> {
 
 
         grid.addComponentColumn(editora -> {
-            Button deleteButton = new Button("Excluir");
-            deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            deleteButton.addClickListener(event -> {
-                // Obtém a editora associada à linha selecionada
-                Editora editoraSelecionada = editora;
-            });
-            return deleteButton;
-        });
+    Button deleteButton = new Button("Excluir");
+    deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+    deleteButton.addClickListener(event -> {
+        // Obtém a editora selecionada
+        Editora editoraSelecionada = editora;
+
+        // Abre um diálogo de confirmação
+        ConfirmDialog dialog = new ConfirmDialog(
+            "Confirmação",
+            "Tem certeza de que deseja excluir esta editora?",
+            "Sim", // Botão de confirmação
+            confirmEvent -> {
+                // Chama o método excluir do seu repository para excluir a editora selecionada
+                EditoraRepository editoraRepository = new EditoraRepository();
+                boolean sucesso = editoraRepository.excluir(editoraSelecionada);
+
+                if (sucesso) {
+                    refreshGrid();
+                    Notification.show("Editora excluída com sucesso!", 3000, Notification.Position.MIDDLE);
+                } else {
+                    Notification.show("Erro ao excluir a editora. Por favor, tente novamente.", 3000, Notification.Position.MIDDLE);
+                }
+            },
+            "Cancelar", // Botão de cancelamento
+            cancelEvent -> {
+                // O usuário cancelou a exclusão, não faz nada
+            }
+        );
+        dialog.open();
+    });
+
+    return deleteButton;
+});
+
+        
     }
 
     private List<Editora> getEditoras() {
