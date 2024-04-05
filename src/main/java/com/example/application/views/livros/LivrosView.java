@@ -99,24 +99,24 @@ public class LivrosView extends Composite<VerticalLayout> {
         formLayout2Col.add(comboBox2);
         getContent().add(buttonPrimary);
 
-        // Cria e configura a grid
-       grid = new Grid<>(Livro.class);
-    grid.setSizeFull();
-
-    // Adiciona a grid ao layout
-    getContent().add(grid);
-
-    getContent().setSizeFull();
-
-    // Atualiza a grid com os dados dos livros ao inicializar a view
-    refreshGrid();
+        
+            // Cria e configura a grid
+            grid = new Grid<>(Livro.class);
+            grid.addColumn(Livro::getNomeLivro).setHeader("Nome do Livro");
+    
+            // Define tamanho da grid
+            grid.setSizeFull();
+    
+            // Adiciona a grid ao layout
+            getContent().add(grid);
+    
+            getContent().setSizeFull();
+    
+            // Atualiza a grid com os dados dos livros ao inicializar a view
+            refreshGrid();
     }
-
-    private List<Livro> getLivros() {
-        // Obtém os livros do banco de dados
-        LivroRepository livroRepository = new LivroRepository();
-        return livroRepository.listarTodas();
-    }
+        
+    
 
     private void setComboBoxData(ComboBox<Editora> comboBoxEditora, ComboBox<Autor> comboBoxAutor) {
         // Popula o ComboBox de Editora
@@ -131,11 +131,23 @@ public class LivrosView extends Composite<VerticalLayout> {
         comboBoxAutor.setItems(autores);
         comboBoxAutor.setItemLabelGenerator(Autor::getNomeAutor);
     }
+   
+
+    // private void refreshGrid() {
+    //     // Atualiza a grid com os dados dos livros
+    //     LivroRepository livroRepository = new LivroRepository();
+    //     List<Livro> livros = livroRepository.listarTodas();
+    //     grid.setItems(livros);
+    // }
+
+    private List<Livro> getLivros() {
+        // Obtém a lista de editoras existentes do repositório
+        LivroRepository livroRepository = new LivroRepository();
+        return livroRepository.listarLivros();
+    }
 
     private void refreshGrid() {
-        // Atualiza a grid com os dados dos livros
-        LivroRepository livroRepository = new LivroRepository();
-        List<Livro> livros = livroRepository.listarTodas();
-        grid.setItems(livros);
+        // Atualiza a grid
+        grid.setItems(getLivros());
     }
 }

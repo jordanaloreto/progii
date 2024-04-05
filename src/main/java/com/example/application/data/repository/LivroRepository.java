@@ -134,6 +134,27 @@ public class LivroRepository {
         return editora;
     }
 
+    public List<Livro> listarLivros() {
+        List<Livro> livros = new ArrayList<>();
+        try (Connection connection = DBConnection.getInstance().getConnection()) {
+            String query = "SELECT id, nome_livro FROM livro";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String nomeLivro = resultSet.getString("nome_livro");
+                Livro livro = new Livro();
+                livro.setId(id);
+                livro.setNomeLivro(nomeLivro);
+                livros.add(livro);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return livros;
+    }
+    
+
 
 
     // public List<Livro> buscarTodos() {
