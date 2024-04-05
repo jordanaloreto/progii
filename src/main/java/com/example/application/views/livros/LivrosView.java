@@ -101,12 +101,12 @@ public class LivrosView extends Composite<VerticalLayout> {
 
         // Cria e configura a grid
        grid = new Grid<>(Livro.class);
-    grid.setColumns("nomeLivro");
-    // Carrega os nomes dos livros na grid
-    grid.setDataProvider(new ListDataProvider<>(getLivros()));
     grid.setSizeFull();
+
     // Adiciona a grid ao layout
     getContent().add(grid);
+
+    getContent().setSizeFull();
 
     // Atualiza a grid com os dados dos livros ao inicializar a view
     refreshGrid();
