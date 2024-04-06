@@ -9,13 +9,17 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.combobox.ComboBox;
 
+import com.example.application.data.Livro;
+import com.example.application.data.repository.AutorRepository;
+import com.example.application.data.repository.EditoraRepository;
+
 public class LivroEditorForm extends FormLayout {
     private TextField nomeLivroField;
     private TextField anoPublicacaoField;
     private ComboBox<Editora> editoraComboBox;
     private ComboBox<Autor> autorComboBox;
 
-    public LivroEditorForm() {
+    public LivroEditorForm(Livro livro) {
         // Inicializa os componentes do formulário
         nomeLivroField = new TextField("Nome do Livro");
         anoPublicacaoField = new TextField("Ano de Publicação");
@@ -30,37 +34,67 @@ public class LivroEditorForm extends FormLayout {
 
         // Adiciona os componentes ao layout do formulário
         add(nomeLivroField, anoPublicacaoField, editoraComboBox, autorComboBox);
+
+        // Preenche os campos com os detalhes do livro fornecido
+        if (livro != null) {
+            nomeLivroField.setValue(livro.getNomeLivro());
+            anoPublicacaoField.setValue(livro.getAnoPublicacao());
+            editoraComboBox.setValue(livro.getEditora());
+            autorComboBox.setValue(livro.getAutor());
+        }
     }
 
-    // Método para definir as opções do ComboBox de Editora
-    public void setEditoras(List<Editora> editoras) {
-        editoraComboBox.setItems(editoras);
-        editoraComboBox.setItemLabelGenerator(Editora::getNomeEditora);
-    }
-
-    // Método para definir as opções do ComboBox de Autor
-    public void setAutores(List<Autor> autores) {
-        autorComboBox.setItems(autores);
-        autorComboBox.setItemLabelGenerator(Autor::getNomeAutor);
-    }
-
-    // Método para obter o valor do nome do livro
+    // Métodos getters para obter os valores dos campos
     public String getNomeLivro() {
         return nomeLivroField.getValue();
     }
 
-    // Método para obter o valor do ano de publicação
     public String getAnoPublicacao() {
         return anoPublicacaoField.getValue();
     }
 
-    // Método para obter a editora selecionada
     public Editora getEditoraSelecionada() {
         return editoraComboBox.getValue();
     }
 
-    // Método para obter o autor selecionado
     public Autor getAutorSelecionado() {
         return autorComboBox.getValue();
     }
+
+     // Método para definir o nome do livro no campo correspondente
+     public void setNomeLivro(String nomeLivro) {
+        nomeLivroField.setValue(nomeLivro);
+    }
+
+    // Método para definir o ano de publicação no campo correspondente
+    public void setAnoPublicacao(String anoPublicacao) {
+        anoPublicacaoField.setValue(anoPublicacao);
+    }
+
+    // Método para definir a editora selecionada no combobox correspondente
+    public void setEditoraSelecionada(Editora editora) {
+        editoraComboBox.setValue(editora);
+    }
+
+    // Método para definir o autor selecionado no combobox correspondente
+    public void setAutorSelecionado(Autor autor) {
+        autorComboBox.setValue(autor);
+    }
+
+
+    // Método para popular os ComboBox de autor e editora
+    public void populateComboBoxes() {
+        // Preenche o ComboBox de Editora
+        EditoraRepository editoraRepository = new EditoraRepository();
+        List<Editora> editoras = editoraRepository.listarTodas();
+        editoraComboBox.setItems(editoras);
+        editoraComboBox.setItemLabelGenerator(Editora::getNomeEditora);
+
+        // Preenche o ComboBox de Autor
+        AutorRepository autorRepository = new AutorRepository();
+        List<Autor> autores = autorRepository.listarTodos();
+        autorComboBox.setItems(autores);
+        autorComboBox.setItemLabelGenerator(Autor::getNomeAutor);
+    }
 }
+

@@ -72,22 +72,83 @@ public class LivroRepository {
         }
     }
 
+    public boolean removerReferenciasLivro(Livro livro) throws SQLException {
+        Connection connection = null;
+        try {
+            // Obter a conexão
+            connection = DBConnection.getInstance().getConnection();
+    
+            // Remover referências do livro na tabela de empréstimo
+            boolean sucessoRemoverEmprestimos = removerEmprestimosDoLivro(connection, livro);
+    
+            // Remover referências do livro na tabela de edições
+            boolean sucessoRemoverEdicoes = removerEdicoesDoLivro(connection, livro);
+    
+            // Se ambas as operações forem bem-sucedidas, retornar true
+            return sucessoRemoverEmprestimos && sucessoRemoverEdicoes;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
+    
+    public boolean removerEmprestimosDoLivro(Connection connection, Livro livro) throws SQLException {
+        String delete = "DELETE FROM emprestimo_livro WHERE id_livro = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(delete)) {
+            preparedStatement.setInt(1, livro.getId());
+            int resultado = preparedStatement.executeUpdate();
+            return true; // Independente do resultado, consideramos como sucesso
+        }
+    }
+    
+    public boolean removerEdicoesDoLivro(Connection connection, Livro livro) throws SQLException {
+        // Verifica se o livro possui edições associadas
+        if (livroTemEdicoes(connection, livro)) {
+            String delete = "DELETE FROM edicao WHERE id_livro = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(delete)) {
+                preparedStatement.setInt(1, livro.getId());
+                int resultado = preparedStatement.executeUpdate();
+                return resultado > 0;
+            }
+        } else {
+            // Se o livro não tiver edições, não é necessário excluir nada
+            return true;
+        }
+    }
+    
+    public boolean livroTemEdicoes(Connection connection, Livro livro) throws SQLException {
+        String query = "SELECT COUNT(*) FROM edicao WHERE id_livro = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, livro.getId());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        }
+    }
+    
     public List<Livro> listarTodas() {
         List<Livro> livros = new ArrayList<>();
         try (Connection connection = DBConnection.getInstance().getConnection()) {
-            String query = "SELECT * FROM livro";
+            String query = "SELECT l.id AS livro_id, l.nome_livro, l.ano_publicacao, a.id AS autor_id, a.nome_autor, e.id AS editora_id, e.nome_editora "
+                         + "FROM livro l "
+                         + "JOIN autor a ON l.id_autor = a.id "
+                         + "JOIN editora e ON l.id_editora = e.id";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
+                int id = resultSet.getInt("livro_id");
                 String nomeLivro = resultSet.getString("nome_livro");
                 String anoPublicacao = resultSet.getString("ano_publicacao");
+                int autorId = resultSet.getInt("autor_id");
+                String nomeAutor = resultSet.getString("nome_autor");
+                int editoraId = resultSet.getInt("editora_id");
+                String nomeEditora = resultSet.getString("nome_editora");
                 
-                int autorId = resultSet.getInt("id");
-                Autor autor = buscarAutorPorId(autorId);
-                
-                int editoraId = resultSet.getInt("id");
-                Editora editora = buscarEditoraPorId(editoraId); 
+                Autor autor = new Autor(autorId, nomeAutor); // Supondo que Autor tenha um construtor correspondente
+                Editora editora = new Editora(editoraId, nomeEditora); // Supondo que Editora tenha um construtor correspondente
                 
                 Livro livro = new Livro(id, nomeLivro, anoPublicacao, autor, editora);
                 livros.add(livro);
@@ -97,6 +158,8 @@ public class LivroRepository {
         }
         return livros;
     }
+    
+    
     
     private Autor buscarAutorPorId(int id) {
         Autor autor = null;
@@ -153,6 +216,10 @@ public class LivroRepository {
         }
         return livros;
     }
+
+
+    
+    
     
 
 

@@ -30,4 +30,10 @@ public class Editora {
         this.nomeEditora = nomeEditora;
     }
 
+    @Override
+public String toString() {
+    return nomeEditora; // Supondo que 'nomeEditora' seja o nome da editora
+}
+
+
 }
