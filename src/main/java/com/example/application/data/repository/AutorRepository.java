@@ -74,10 +74,15 @@ public class AutorRepository {
             Autor autor = new Autor(id, nome); // Supondo que você tenha um construtor em Autor que aceite id e nome
             autores.add(autor);
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+    // Imprimir lista de autores
+    System.out.println("Lista de Autores:");
+    for (Autor autor : autores) {
+        System.out.println(autor);
     }
-    return autores;
+} catch (SQLException e) {
+    e.printStackTrace();
+}
+return autores;
 }
 
 }

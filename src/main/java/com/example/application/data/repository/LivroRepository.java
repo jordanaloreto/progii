@@ -43,8 +43,8 @@ public class LivroRepository {
             String update = "UPDATE livro SET nome_livro=?, id_autor=?, id_editora=?, ano_Publicacao=?  WHERE id=?";
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setString(1, livro.getNomeLivro());
-            preparedStatement.setString(2, livro.getAutor().getNomeAutor());
-            preparedStatement.setString(3, livro.getEditora().getNomeEditora());
+            preparedStatement.setInt(2, livro.getAutor().getId());
+            preparedStatement.setInt(3, livro.getEditora().getId());
             preparedStatement.setString(4, livro.getAnoPublicacao());
             preparedStatement.setInt(5, livro.getId());
             int resultado = preparedStatement.executeUpdate();

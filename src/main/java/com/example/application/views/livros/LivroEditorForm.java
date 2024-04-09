@@ -35,6 +35,9 @@ public class LivroEditorForm extends FormLayout {
         // Adiciona os componentes ao layout do formulário
         add(nomeLivroField, anoPublicacaoField, editoraComboBox, autorComboBox);
 
+        populateComboBoxes();
+
+
         // Preenche os campos com os detalhes do livro fornecido
         if (livro != null) {
             nomeLivroField.setValue(livro.getNomeLivro());

@@ -74,6 +74,13 @@ public class EditoraRepository {
             Editora editora = new Editora(id, nome); // Supondo que você tenha um construtor em Editora que aceite id e nome
             editoras.add(editora);
         }
+
+
+   // Imprimir lista de editoras
+        System.out.println("Lista de Editoras:");
+        for (Editora editora : editoras) {
+            System.out.println(editora);
+        }
     } catch (SQLException e) {
         e.printStackTrace();
     }
